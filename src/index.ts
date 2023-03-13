@@ -88,7 +88,7 @@ class SearchBox extends Base {
 		if (this.status === "answered") {
 			message += chalk.cyan(this.selection.join(", "));
 		} else {
-			message += `${tip}\n${chalk.green('>')}${this.rl.line}`;
+			message += `${tip}\n${chalk.green('>')} ${this.rl.line}`;
 			const choicesStr = renderChoices(this.filterList, this.pointer);
 			bottomContent = this.paginator.paginate(
 				choicesStr,
@@ -197,7 +197,7 @@ class SearchBox extends Base {
 			(e: Event) => e.key.name === "a" && e.key.ctrl
 		);
 		const invertKey = events.keypress.filter(
-			(e: Event) => e.key.name === "i" && e.key.ctrl
+			(e: Event) => e.key.name === "r" && e.key.ctrl
 		);
 		const validation = this.handleSubmitEvents(
 			events.line.map(this.getCurrentValue.bind(this))

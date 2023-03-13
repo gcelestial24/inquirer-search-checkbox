@@ -85,7 +85,7 @@ var SearchBox = (function (_super) {
             message += chalk_1.default.cyan(this.selection.join(", "));
         }
         else {
-            message += tip + "\n" + chalk_1.default.green('>') + this.rl.line;
+            message += tip + "\n" + chalk_1.default.green('>') + " " + this.rl.line;
             var choicesStr = renderChoices(this.filterList, this.pointer);
             bottomContent = this.paginator.paginate(choicesStr, this.pointer, this.opt.pageSize);
         }
@@ -165,7 +165,7 @@ var SearchBox = (function (_super) {
             return e.key.name === "down" || (e.key.name === "n" && e.key.ctrl);
         });
         var allKey = events.keypress.filter(function (e) { return e.key.name === "a" && e.key.ctrl; });
-        var invertKey = events.keypress.filter(function (e) { return e.key.name === "i" && e.key.ctrl; });
+        var invertKey = events.keypress.filter(function (e) { return e.key.name === "r" && e.key.ctrl; });
         var validation = this.handleSubmitEvents(events.line.map(this.getCurrentValue.bind(this)));
         validation.success.forEach(this.onEnd.bind(this));
         validation.error.forEach(this.onError.bind(this));
