@@ -76,13 +76,19 @@ class SearchBox extends Base {
 		// Render question
 		var message = this.getQuestion();
 		var bottomContent = "";
-		const tip = chalk.dim("(Press <space> to select, <enter> to submit.)");
+		const keys = [
+			`${chalk.cyan.bold('<space>')} ${chalk.dim('to select')}`,
+			`${chalk.cyan.bold('<ctrl> + <a>')} ${chalk.dim('to toggle all')}`,
+			`${chalk.cyan.bold('<ctrl> + <i>')} ${chalk.dim('to invert selection')}`,
+			`${chalk.dim('and')} ${chalk.cyan.bold('<enter>')} ${chalk.dim('to proceed')}`,
+		];
+		const tip = ` ${chalk.dim('(Press')} ${keys.join(', ')}${chalk.dim(')')}`;
 
 		// Render choices or answer depending on the state
 		if (this.status === "answered") {
 			message += chalk.cyan(this.selection.join(", "));
 		} else {
-			message += `${tip} ${this.rl.line}`;
+			message += `${tip}\n${chalk.green('>')}${this.rl.line}`;
 			const choicesStr = renderChoices(this.filterList, this.pointer);
 			bottomContent = this.paginator.paginate(
 				choicesStr,
@@ -139,6 +145,13 @@ class SearchBox extends Base {
 		this.render();
 	}
 
+	onInvertKey() {
+		this.filterList.forEach(item => {
+			this.choices[item.id].checked = !this.choices[item.id].checked;
+		});
+		this.render();
+	}
+
 	onEnd(state: any) {
 		this.status = "answered";
 
@@ -181,7 +194,10 @@ class SearchBox extends Base {
 				e.key.name === "down" || (e.key.name === "n" && e.key.ctrl)
 		);
 		const allKey = events.keypress.filter(
-			(e: Event) => e.key.name === "o" && e.key.ctrl
+			(e: Event) => e.key.name === "a" && e.key.ctrl
+		);
+		const invertKey = events.keypress.filter(
+			(e: Event) => e.key.name === "i" && e.key.ctrl
 		);
 		const validation = this.handleSubmitEvents(
 			events.line.map(this.getCurrentValue.bind(this))
@@ -192,6 +208,9 @@ class SearchBox extends Base {
 		upKey.forEach(this.onUpKey.bind(this));
 		downKey.forEach(this.onDownKey.bind(this));
 		allKey.takeUntil(validation.success).forEach(this.onAllKey.bind(this));
+		invertKey
+			.takeUntil(validation.success)
+			.forEach(this.onInvertKey.bind(this));
 		events.spaceKey
 			.takeUntil(validation.success)
 			.forEach(this.onSpaceKey.bind(this));

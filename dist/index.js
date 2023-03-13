@@ -74,12 +74,18 @@ var SearchBox = (function (_super) {
     SearchBox.prototype.render = function (error) {
         var message = this.getQuestion();
         var bottomContent = "";
-        var tip = chalk_1.default.dim("(Press <space> to select, <enter> to submit.)");
+        var keys = [
+            chalk_1.default.cyan.bold('<space>') + " " + chalk_1.default.dim('to select'),
+            chalk_1.default.cyan.bold('<ctrl> + <a>') + " " + chalk_1.default.dim('to toggle all'),
+            chalk_1.default.cyan.bold('<ctrl> + <i>') + " " + chalk_1.default.dim('to invert selection'),
+            chalk_1.default.dim('and') + " " + chalk_1.default.cyan.bold('<enter>') + " " + chalk_1.default.dim('to proceed'),
+        ];
+        var tip = " " + chalk_1.default.dim('(Press') + " " + keys.join(', ') + chalk_1.default.dim(')');
         if (this.status === "answered") {
             message += chalk_1.default.cyan(this.selection.join(", "));
         }
         else {
-            message += tip + " " + this.rl.line;
+            message += tip + "\n" + chalk_1.default.green('>') + this.rl.line;
             var choicesStr = renderChoices(this.filterList, this.pointer);
             bottomContent = this.paginator.paginate(choicesStr, this.pointer, this.opt.pageSize);
         }
@@ -123,6 +129,13 @@ var SearchBox = (function (_super) {
         });
         this.render();
     };
+    SearchBox.prototype.onInvertKey = function () {
+        var _this = this;
+        this.filterList.forEach(function (item) {
+            _this.choices[item.id].checked = !_this.choices[item.id].checked;
+        });
+        this.render();
+    };
     SearchBox.prototype.onEnd = function (state) {
         this.status = "answered";
         this.render();
@@ -151,13 +164,17 @@ var SearchBox = (function (_super) {
         var downKey = events.keypress.filter(function (e) {
             return e.key.name === "down" || (e.key.name === "n" && e.key.ctrl);
         });
-        var allKey = events.keypress.filter(function (e) { return e.key.name === "o" && e.key.ctrl; });
+        var allKey = events.keypress.filter(function (e) { return e.key.name === "a" && e.key.ctrl; });
+        var invertKey = events.keypress.filter(function (e) { return e.key.name === "i" && e.key.ctrl; });
         var validation = this.handleSubmitEvents(events.line.map(this.getCurrentValue.bind(this)));
         validation.success.forEach(this.onEnd.bind(this));
         validation.error.forEach(this.onError.bind(this));
         upKey.forEach(this.onUpKey.bind(this));
         downKey.forEach(this.onDownKey.bind(this));
         allKey.takeUntil(validation.success).forEach(this.onAllKey.bind(this));
+        invertKey
+            .takeUntil(validation.success)
+            .forEach(this.onInvertKey.bind(this));
         events.spaceKey
             .takeUntil(validation.success)
             .forEach(this.onSpaceKey.bind(this));
