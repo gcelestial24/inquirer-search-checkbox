@@ -79,7 +79,7 @@ class SearchBox extends Base {
 		const keys = [
 			`${chalk.cyan.bold('<space>')} ${chalk.dim('to select')}`,
 			`${chalk.cyan.bold('<ctrl> + <a>')} ${chalk.dim('to toggle all')}`,
-			`${chalk.cyan.bold('<ctrl> + <i>')} ${chalk.dim('to invert selection')}`,
+			`${chalk.cyan.bold('<ctrl> + <r>')} ${chalk.dim('to invert selection')}`,
 			`${chalk.dim('and')} ${chalk.cyan.bold('<enter>')} ${chalk.dim('to proceed')}`,
 		];
 		const tip = ` ${chalk.dim('(Press')} ${keys.join(', ')}${chalk.dim(')')}`;

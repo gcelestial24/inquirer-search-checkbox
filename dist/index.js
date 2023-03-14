@@ -77,7 +77,7 @@ var SearchBox = (function (_super) {
         var keys = [
             chalk_1.default.cyan.bold('<space>') + " " + chalk_1.default.dim('to select'),
             chalk_1.default.cyan.bold('<ctrl> + <a>') + " " + chalk_1.default.dim('to toggle all'),
-            chalk_1.default.cyan.bold('<ctrl> + <i>') + " " + chalk_1.default.dim('to invert selection'),
+            chalk_1.default.cyan.bold('<ctrl> + <r>') + " " + chalk_1.default.dim('to invert selection'),
             chalk_1.default.dim('and') + " " + chalk_1.default.cyan.bold('<enter>') + " " + chalk_1.default.dim('to proceed'),
         ];
         var tip = " " + chalk_1.default.dim('(Press') + " " + keys.join(', ') + chalk_1.default.dim(')');
